@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-mysql-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: node-mysql-app
+  
+  template:
+    metadata:
+      labels:
+        app: node-mysql-app
+    
+    spec:
+      containers:
+      - name: node-mysql-app
+  
+        image: kanishka9723/myapp1:latest
+        imagePullPolicy: Always
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 3000
+        env:
+        - name: MYSQL_USERNAME
+          value: "root"
+        - name: MYSQL_ROOT_PASSWORD
+          value: "kook"
+        - name: MYSQL_DATABASE
+          value: "mydb"
+        - name: MYSQL_HOST
+          value: "mysql-service.default.svc.cluster.local"
+        - name: MYSQL_LOCAL_PORT
+          value: "3306"
+        - name: MYSQL_DOCKER_PORT
+          value: "3306"
+        - name: NODEJS_LOCAL_PORT
+          value: "3000"

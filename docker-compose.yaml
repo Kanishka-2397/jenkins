@@ -1,0 +1,21 @@
+services:
+  mysql:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: kook
+      MYSQL_DATABASE: mydatabase
+    ports:
+      - "3307:3306"  
+
+  app:
+    image: kanishka9723/myapp
+    depends_on:
+      - mysql
+    environment:
+      DB_HOST: mysql
+      DB_USER: root
+      DB_PASSWORD: kook
+      MYSQL_DATABASE: mydatabase
+    ports:
+      - "3000:3000"

@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql-app
+  template:
+    metadata:
+      labels:
+        app: mysql-app
+    spec:
+      containers:
+      - name: mysql-app
+        image: mysql:5.7
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"  # Corrected CPU format
+          limits:
+            memory: "1Gi"  # Corrected Memory format
+            cpu: "500m"
+        ports:
+        - containerPort: 3306
+        env: 
+        - name: MYSQL_ROOT_PASSWORD
+          value: "kook"
+        - name: MYSQL_DATABASE
+          value: "mydb"
+        - name: MYSQL_HOST
+          value: "mysql-service.default.svc.cluster.local"
