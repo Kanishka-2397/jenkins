@@ -6,10 +6,14 @@ pipeline {
         IMAGE_TAG = 'latest'
     }
 
+    triggers {
+        githubPush()
+    }
+
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/kanishka9723/project.git' 
+                git 'https://github.com/kanishka9723/project.git'
             }
         }
 
@@ -32,10 +36,11 @@ pipeline {
             }
         }
 
-        stage('Kubernetes Deploy to Minikube') {
+        stage('Update Image in YAML & Deploy to Minikube') {
             steps {
                 script {
-                    bat '''
+                    bat """
+                        powershell -Command "(Get-Content k8s\\deployment.yaml) -replace 'kanishka9723/myapp1:.*', '${IMAGE_NAME}:${IMAGE_TAG}' | Set-Content k8s\\deployment.yaml"
                         kubectl apply -f k8s\\deployment.yaml
                         kubectl apply -f k8s\\service.yaml
                         kubectl apply -f k8s\\mysql-deploy.yaml
@@ -44,7 +49,7 @@ pipeline {
                         kubectl apply -f k8s\\node-deploy.yaml
                         kubectl apply -f k8s\\node-service.yaml
                         kubectl rollout status deployment/your-deployment-name
-                    '''
+                    """
                 }
             }
         }
